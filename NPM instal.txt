@@ -1,0 +1,24 @@
+npm i express --save
+
+<Libreria: Sirve>
+
+npm i mongoose --save
+
+<Libreria de funciones para poder trabajar de forma mas sencilla con mogosedb con esto puedes trtabjar con modelos espesificos y no hacer consultas directas a la DB con capas de metodos y extreaccion vas a poder hacer busquedas mas faciles>
+
+npm i multer --save
+
+<libreria para poder subir archivos>
+
+npm i validator --save 
+
+<librerias que tepermite validar datos>
+
+npm i cors --save
+
+<libreria que ayuda en la comunicacion de datos entre dominios diferentes (acceso crusante entre dominios)>
+
+npm i nodemon --save-dev
+
+<--dev: es una dependencia que no estara en produccion si no estara en modo de desarrollo para que si se publique un dia de esto no se enviaria con esta libreria>
+<libreria que nos ayudara a monitorear en tiempo real el codigo y refrescara el el servidor con la nueva informacion>
