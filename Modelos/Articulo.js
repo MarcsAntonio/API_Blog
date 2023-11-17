@@ -9,13 +9,14 @@ const ArticuloSchema = Schema({
         type: String,
         required: true
     },
-    fecha:{
-        type: Date,
-        default: Date.now
-    },
     imagen:{
         type: String,
         default: "defauld.pnj"
+    },
+    fecha:{
+        type: Date,
+        default: Date.now
     }
 });
+
 module.export = model("Articulo", ArticuloSchema, "articulo")
