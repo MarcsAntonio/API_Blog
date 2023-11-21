@@ -13,13 +13,15 @@ const port = 3900;
 app.use(cors());
 
 // Convertir el body a objeto js
-app.use(express.json());
+app.use(express.json()); //Recibe datos en formato app/json 
+app.use(express.urlencoded({extended:true})); //Permite recibir informacion con form web y transformar en json
 
 // Rutas
 const rutas_articulo = require("./Ruta/articulo");
 app.use("/api", rutas_articulo);
 
 // Rutas prueba hardcodeadas
+/*
 app.get("/probando", (req, res)=>{
     console.log("Se a ejecutado el EndPoind probando")
     return res.status(200).send({
@@ -37,6 +39,7 @@ app.get("/1", (req, res)=>{
     </div>`
     )
 });
+*/
 
 // Crear servidor y escuchar peticiones http
 app.listen(port, ()=>{
