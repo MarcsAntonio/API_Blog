@@ -1,5 +1,5 @@
-const validator = require("validator");
 const Articulo = require("../Modelos/Articulo");
+const {validarArticulo} = require("../helper/validar");
 
 
 const prueba = (req, res) => {
@@ -30,14 +30,7 @@ const crear = (req, res) => {
 
     //Validar los datos
     try {
-        let validar_titulo = !validator.isEmpty(parametros.titulo) &&
-                            validator.isLength(parametros.titulo, {min: 5, max: undefined});
-        let validar_contenido = !validator.isEmpty(parametros.contenido) &&
-                            validator.isLength(parametros.contenido);
-
-        if (!validar_titulo || !validar_contenido) {
-            throw new Error("No se ha validado la informacion !!");
-        }
+        validarArticulo(parametros)
     } catch (error) {
         return res.status(400).json({
             status:"error",
@@ -156,21 +149,15 @@ const editar = (req, res) =>{
     let parametros = req.body;
 
     try {
-        let validar_titulo = !validator.isEmpty(parametros.titulo) &&
-                            validator.isLength(parametros.titulo, {min: 5, max: undefined});
-        let validar_contenido = !validator.isEmpty(parametros.contenido)
-
-        if (!validar_titulo || !validar_contenido) {
-            throw new Error("No se ha validado la informacion !!");
-        }
+        validarArticulo(parametros)
     } catch (error) {
-        return res.status(400).json({
+        return res.status(500).json({
             status:"error",
             mensaje: "Falta datos por guardar"
         })
     }
 
-Articulo.findOneAndUpdate({_id: articuloId}, req.body)
+Articulo.findOneAndUpdate({_id: articuloId}, req.body, {new: true})
     .then((articuloActualizado)=>{
         if (!articuloActualizado) {
             return res.status(404).json({
@@ -187,10 +174,11 @@ Articulo.findOneAndUpdate({_id: articuloId}, req.body)
         .catch((error)=>{
             return res.status(500).json({
             status:"error",
-            mensaje: error
-        })
+            mensaje: "Ha ocurrido un error al editar un articulos",
+            error: error.message        })
     })
 }
+
 
 module.exports = {
     prueba,
