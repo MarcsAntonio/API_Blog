@@ -67,8 +67,93 @@ const crear = (req, res) => {
         });
 }
 
+const listar = (req, res) =>{
+
+    let consulta = Articulo.find({})
+
+    if(req.params.ultimos && req.params.ultimos != undefined){
+        consulta.limit(3);
+    }
+
+    consulta.sort({fecha: -1})
+        .then((articulos)=>{
+        
+        if (!articulos) {
+            return res.status(404).json({
+                status: "error",
+                mensaje: "No se han encontrado articulos!!"
+            })
+        }
+        
+        return res.status(200).send({
+            status: "success",
+            parametros_url: req.params.ultimos,
+            contador: articulos.length,
+            articulos
+        });
+    })
+    .catch((error) => {
+        return res.status(500).json({
+            status: "error",
+            mensaje: "Ha ocurrido un error al listar los articulos",
+            error: error.message
+        });
+    });
+};
+
+const uno = (req, res) =>{
+
+    let id = req.params.id;
+
+    Articulo.findById(id)
+        .then((articulos) => {
+
+        if (!articulos) {
+            return res.status(404).json({
+                status: "error",
+                mensaje: "No se han encontrado articulos!!"
+            })
+        }
+        
+        return res.status(200).json({
+            status: "success",
+            articulos
+        });
+    })
+    .catch((error) => {
+        return res.status(500).json({
+            status: "error",
+            mensaje: "Ha ocurrido un error al listar los articulos",
+            error: error.message
+        });
+    })
+}
+
+const borrar = (req, res) =>{
+    let articulo_id = req.params.id;
+
+    Articulo.findOneAndDelete({_id: articulo_id})
+        .then((articuloBorrado) => {
+            return res.status(200).json({
+                status: "success",
+                articulo: articuloBorrado,
+                mensaje: "Articulo borrado"
+            })
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                status: "error",
+                mensaje: "Ha ocurrido un error al eliminar un articulo",
+                error: error.message
+        })
+    })
+}
+
 module.exports = {
     prueba,
     cursos,
-    crear
+    crear,
+    listar,
+    uno,
+    borrar
 }
