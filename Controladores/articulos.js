@@ -1,6 +1,7 @@
-const Articulo = require("../Modelos/Articulo");
-const { validarArticulo } = require("../helper/validar");
+const path = require("path");
 const fs = require("fs");
+const { validarArticulo } = require("../helper/validar");
+const Articulo = require("../Modelos/Articulo");
 
 const prueba = (req, res) => {
     return res.status(200).json({
@@ -176,7 +177,7 @@ const subir = (req, res) => {
     //Recoger el fichero de imagen subido
     if (!req.file && !req.files) {
         return res.status(404).json({
-            status: error,
+            status: "error",
             mensaje: "Peticion invalida",
         });
     }
@@ -230,6 +231,65 @@ const subir = (req, res) => {
     }
 };
 
+const imagen = (req, res) =>{
+    let fichero = req.params.fichero;
+    let ruta_fisica = "./imagenes/articulos/"+fichero;
+
+    fs.stat(ruta_fisica, (error, existe) =>{
+        if (existe){
+            return res.sendFile(path.resolve(ruta_fisica));
+        }else{
+            return res.status(404).json({
+                status: error,
+                mensaje: "Fichero no existente",
+                existe,
+                fichero,
+                ruta_fisica
+            });
+        }
+
+    })
+}
+
+const buscar = async(req, res) =>{
+
+    try {
+        //sacar el string de buscar
+    let busqueda = req.params.busqueda
+
+    //Find OR
+    let articuloEncontrado = await Articulo.find({ 
+        "$or": [
+        {"titulo": {"$regex": busqueda, "$options": "i"}},
+        {"contenido": {"$regex": busqueda, "$options": "i"}}
+    ]})
+        //Orden
+    .sort({fecha: -1})
+        //Devolver resultado
+    //.exec()
+        if(!articuloEncontrado || articuloEncontrado.length < 1){
+            return res.status(404).json({
+                status: "error",
+                mensaje: "No se han encontrado articulos con ese nombre"
+            })
+        }
+        return res.status(200).json({
+            status: "success",
+            articuloEncontrado
+        })
+    } catch (err) {
+        return res.status(500).json({
+            status: "err",
+            mensaje: "Error a la hora de realizarla busqueda"
+        })
+    }
+    
+
+
+    //Ejecutar consulta
+    
+}
+
 module.exports = {
     prueba,
     cursos,
@@ -239,4 +299,6 @@ module.exports = {
     borrar,
     editar,
     subir,
+    imagen,
+    buscar
 };
